@@ -16,7 +16,7 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-
+print("Hello")
 ```
 
 Column {data-width=350}
@@ -25,12 +25,12 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
-
+print("Chart B")
 ```
 
 ### Chart C
 
 ```{r}
-
+print("CHART C!!")
 ```
 
