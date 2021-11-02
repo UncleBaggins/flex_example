@@ -1,9 +1,11 @@
 ---
-title: "Untitled"
+title: "The Best Project"
+author: "Technomancers"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
