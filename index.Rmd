@@ -16,7 +16,9 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-print("Hello")
+selectInput("input_test", label = h3("Pick a Number"), 
+    choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
+    selected = 1)
 ```
 
 Column {data-width=350}
@@ -24,8 +26,9 @@ Column {data-width=350}
 
 ### Chart B
 
+words...lots of words
 ```{r}
-print("Chart B")
+print("Chart B?")
 ```
 
 ### Chart C
