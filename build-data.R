@@ -29,19 +29,25 @@ dates <- tibble(
   ds = tk_make_timeseries(min(Iowa_Prison_Admissions$admission_date), max(Iowa_Prison_Admissions$date_of_release), by = "month")
 )
 
+tibble(
+  ds = tk_make_timeseries("2019-03-20", "2020-04-20", by = "month")
+)
+
 
 offender_dates <- Iowa_Prison_Admissions %>% 
   # head() %>% 
   filter(!is.na(admission_date),
          !is.na(date_of_release)) %>% 
   group_by(offender_number, record_id) %>%
-  summarise(min_date = min(admission_date),
-            max_date = max(date_of_release))  %>% 
+  summarise(min_date = floor_date(min(admission_date), 'month'),
+            max_date = floor_date(max(date_of_release), 'month'))  %>% 
   ungroup() %>% 
   group_by(offender_number, record_id) %>% 
   mutate(dates_admitted = list(tibble(
     ds = tk_make_timeseries(min_date, max_date, by = "month")
   )))
 
-offender_dates
-
+offender_dates %>% 
+  head(1) %>% 
+  tidyr::unnest() %>% 
+  mutate(ds = floor_date(ds, 'month'))
