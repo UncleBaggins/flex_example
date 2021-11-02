@@ -5,7 +5,6 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -18,9 +17,9 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-selectInput("input_test", label = h3("Pick a Number"), 
-    choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
-    selected = 1)
+# selectInput("input_test", label = h3("Pick a Number"), 
+#     choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
+#     selected = 1)
 ```
 
 Column {data-width=350}
