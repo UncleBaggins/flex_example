@@ -19,7 +19,7 @@ current_admissions <- read_csv("data/Current_Iowa_Correctional_System_Prison_Pop
 
 
 
-## ---- Expload Offender Dates in Prison (Monthly) ---- ##
+## ---- Expload Offender Dates in Prison (appends a month for each month the offender is in prison) ---- ##
 offenders_active_dates <- current_admissions %>% 
   mutate(min_date = floor_date(prison_start_date, unit = 'month'),
          max_date = floor_date(report_date, 'month')) %>% 
