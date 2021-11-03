@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Iowa Prison Population Growth Analysis"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
