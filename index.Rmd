@@ -36,6 +36,11 @@ monthly_prison_pop %>%
   e_datazoom() %>% 
   e_title("Monthly Prison Population", "Iowa Department of Corrections") %>% 
   e_legend(show = F)
+
+# selectInput("input_test", label = h3("Pick a Number"), 
+#     choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
+#     selected = 1)
+
 ```
 
 Column {data-width=350}
@@ -43,13 +48,14 @@ Column {data-width=350}
 
 ### Chart B
 
+words...lots of words
 ```{r}
-
+print("Chart B?")
 ```
 
 ### Chart C
 
 ```{r}
-
+print("CHART C!!")
 ```
 
