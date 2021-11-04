@@ -1,6 +1,5 @@
 ---
-title: "The Best Project"
-author: "Technomancers"
+title: "Iowa Prison Population Growth Analysis"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -9,6 +8,14 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(echarts4r)
+library(dplyr)
+library(janitor)
+library(lubridate)
+library(timetk)
+
+
+load("./data/monthly_prison_pop.rda")
 ```
 
 Column {data-width=650}
@@ -17,9 +24,23 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
+
+monthly_prison_pop %>% 
+  arrange(ds) %>% 
+  # mutate(day = month(ds, label = T)) #%>% 
+  e_charts(ds) %>% 
+  e_line(n) %>%
+  e_tooltip(trigger = "item") %>%
+  e_y_axis(axisLabel = list(interval = 0, rotate = 55)) %>% 
+  # e_color(c("#367C2B", "#FFDE00", "#717A80","#FFF494",'#F3C9CE','#FFE9C7')) %>%
+  e_datazoom() %>% 
+  e_title("Monthly Prison Population", "Iowa Department of Corrections") %>% 
+  e_legend(show = F)
+
 # selectInput("input_test", label = h3("Pick a Number"), 
 #     choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
 #     selected = 1)
+
 ```
 
 Column {data-width=350}
