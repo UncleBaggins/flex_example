@@ -6,37 +6,32 @@ library(timetk)
 library(purrr)
 
 ## ---- Read Data ---- ##
-released_admissions <- read_csv("data/Iowa_Prison_Admissions.csv", 
-                                   col_types = cols(`Admission Date` = col_date(format = "%m/%d/%Y"), 
-                                                    `Date of Release` = col_date(format = "%m/%d/%Y"))) %>% 
+admissions <- read_csv("data/Iowa_Prison_Admissions.csv", 
+                       col_types = cols(`Admission Date` = col_date(format = "%m/%d/%Y"), 
+                                        `Date of Release` = col_date(format = "%m/%d/%Y"))) %>% 
   clean_names() 
 
 
-current_admissions <- read_csv("data/Current_Iowa_Correctional_System_Prison_Population (1).csv", 
-                                                                  col_types = cols(`Prison Start Date` = col_date(format = "%m/%d/%Y"), 
-                                                                                   `Report Date` = col_date(format = "%m/%d/%Y"))) %>% 
+releases <- read_csv("data/Offenders_Released_from_Iowa_Prisons.csv", 
+                     col_types = cols(`Admission Date` = col_date(format = "%m/%d/%Y"),
+                                      `Release Date` = col_date(format = "%m/%d/%Y"))) %>% 
   clean_names() 
 
 
 
 ## ---- Format data to be unioned ---- ##
 
-offender_release_dates <- released_admissions %>% 
-  filter(!is.na(admission_date),
-         !is.na(date_of_release)) %>% 
+admission_dates <- admissions %>% 
   select(offender_number, admission_date, date_of_release)
 
-offenders_active_dates <- current_admissions %>% 
-  filter(!is.na(prison_start_date),
-         !is.na(report_date)) %>% 
-  select(offender_number, prison_start_date, report_date) %>% 
-  rename(admission_date = prison_start_date,
-         date_of_release = report_date)
+release_dates <- releases %>% 
+  rename(date_of_release = release_date) %>% 
+  select(offender_number, admission_date, date_of_release) 
 
 
 ## ---- Expload combined datasets and unnest ---- ##
-unioned_df <- offender_release_dates %>%
-  bind_rows(offenders_active_dates) %>%
+unioned_df <- admission_dates %>%
+  bind_rows(release_dates) %>%
   mutate(start_date = floor_date(admission_date, 'month'),
          end_date = floor_date(date_of_release, 'month'),
          visit_id = paste0(offender_number, as.integer(start_date))) %>% 
