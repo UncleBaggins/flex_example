@@ -18,8 +18,16 @@ releases <- read_csv("data/Offenders_Released_from_Iowa_Prisons.csv",
   clean_names() 
 
 
+current <- read_csv("data/Current_Iowa_Correctional_System_Prison_Population.csv", 
+                    col_types = cols(`Prison Start Date` = col_date(format = "%m/%d/%Y"), 
+                                     `Report Date` = col_date(format = "%m/%d/%Y"))) %>% 
+  clean_names() 
 
 ## ---- Format data to be unioned ---- ##
+
+current_dates <- current %>% 
+  rename(admission_date = prison_start_date) %>% 
+  select(offender_number, admission_date, report_date) 
 
 admission_dates <- admissions %>% 
   select(offender_number, admission_date, date_of_release)
@@ -32,8 +40,14 @@ release_dates <- releases %>%
 ## ---- Expload combined datasets and unnest ---- ##
 unioned_df <- admission_dates %>%
   bind_rows(release_dates) %>%
+  full_join(current_dates, by = c('offender_number', 'admission_date')) %>% 
+  mutate(
+    release_date = case_when(
+      is.na(date_of_release) ~ floor_date(today(), 'month'),
+      TRUE ~ date_of_release
+    )) %>% 
   mutate(start_date = floor_date(admission_date, 'month'),
-         end_date = floor_date(date_of_release, 'month'),
+         end_date = floor_date(release_date, 'month'),
          visit_id = paste0(offender_number, as.integer(start_date))) %>% 
   select(offender_number, start_date, end_date, visit_id) %>% 
   group_by(visit_id) %>%
