@@ -24,8 +24,14 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
+total_prison_pop <- monthly_prison_pop %>% 
+  group_by(ds) %>% 
+  summarise(n = sum(n))
+```
 
-monthly_prison_pop %>% 
+
+```{r}
+total_prison_pop %>% 
   arrange(ds) %>% 
   # mutate(day = month(ds, label = T)) #%>% 
   e_charts(ds) %>% 
