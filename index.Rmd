@@ -4,6 +4,8 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    source_code: embed
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -13,6 +15,7 @@ library(dplyr)
 library(janitor)
 library(lubridate)
 library(timetk)
+library(shiny)
 
 
 load("./data/monthly_prison_pop.rda")
@@ -29,23 +32,47 @@ total_prison_pop <- monthly_prison_pop %>%
   summarise(n = sum(n))
 ```
 
-
 ```{r}
-total_prison_pop %>% 
-  arrange(ds) %>% 
-  # mutate(day = month(ds, label = T)) #%>% 
-  e_charts(ds) %>% 
+selectInput("offenseType", label = h3("Offense Type"), 
+    choices = sort(unique(monthly_prison_pop$offense_types)),
+    selected = "Drug")
+
+filterOffenseType <- reactive(input$offenseType)
+
+monthly_prison_pop %>%
+  filter(offense_types == "Drug") %>%
+  group_by(ds) %>%
+  summarise(n=sum(n)) %>%
+  arrange(ds) %>%
+  # mutate(day = month(ds, label = T)) #%>%
+  e_charts(ds) %>%
   e_line(n) %>%
   e_tooltip(trigger = "item") %>%
-  e_y_axis(axisLabel = list(interval = 0, rotate = 55)) %>% 
+  e_y_axis(axisLabel = list(interval = 0, rotate = 55)) %>%
   # e_color(c("#367C2B", "#FFDE00", "#717A80","#FFF494",'#F3C9CE','#FFE9C7')) %>%
-  e_datazoom() %>% 
-  e_title("Monthly Prison Population", "Iowa Department of Corrections") %>% 
+  e_datazoom() %>%
+  e_title("Monthly Prison Population (for Drug Type)", "Iowa Department of Corrections") %>%
   e_legend(show = F)
 
-# selectInput("input_test", label = h3("Pick a Number"), 
-#     choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
-#     selected = 1)
+
+```
+
+```{r}
+# total_prison_pop %>% 
+#   arrange(ds) %>% 
+#   # mutate(day = month(ds, label = T)) #%>% 
+#   e_charts(ds) %>% 
+#   e_line(n) %>%
+#   e_tooltip(trigger = "item") %>%
+#   e_y_axis(axisLabel = list(interval = 0, rotate = 55)) %>% 
+#   # e_color(c("#367C2B", "#FFDE00", "#717A80","#FFF494",'#F3C9CE','#FFE9C7')) %>%
+#   e_datazoom() %>% 
+#   e_title("Monthly Prison Population", "Iowa Department of Corrections") %>% 
+#   e_legend(show = F)
+# 
+# # selectInput("input_test", label = h3("Pick a Number"), 
+# #     choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), 
+# #     selected = 1)
 
 ```
 
@@ -54,9 +81,9 @@ Column {data-width=350}
 
 ### Chart B
 
-words...lots of words
+Selected Input Value:
 ```{r}
-print("Chart B?")
+renderPrint(filterOffenseType())
 ```
 
 ### Chart C
